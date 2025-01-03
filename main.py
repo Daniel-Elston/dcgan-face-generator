@@ -3,9 +3,8 @@ from __future__ import annotations
 import logging
 
 from config.state_init import StateManager
-from src.pipelines.data_pipeline import DataPipeline
-from src.pipelines.db_pipeline import DatabasePipeline
 from utils.execution import TaskExecutor
+from src.pipelines.pipeline import Pipeline
 from utils.project_setup import init_project
 
 
@@ -20,8 +19,7 @@ class MainPipeline:
     def run(self):
         """ETL pipeline main entry point."""
         steps = [
-            DataPipeline(self.state, self.exe),
-            DatabasePipeline(self.state, self.exe),
+            Pipeline(self.state, self.exe),
         ]
         self.exe._execute_steps(steps, stage="main")
 

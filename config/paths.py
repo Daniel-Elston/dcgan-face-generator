@@ -8,11 +8,7 @@ from pprint import pformat
 
 
 paths_store = {
-    "raw": Path("data/raw/heart.csv"),
-    "sdo": Path("data/sdo/heart.parquet"),
-    
-    "load1_transform": Path("data/raw/heart1.csv"),
-    "load2_fetch": Path("data/raw/heart2.csv"),
+    "raw": Path("data/raw"),
 }
 
 

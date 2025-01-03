@@ -104,6 +104,7 @@ def setup_logging(name, project_dir, log_file_name, config):
         "loggers": {
             "ccxt": {"level": "WARNING", "handlers": ["console", "file"], "propagate": False},
             "PIL": {"level": "WARNING", "handlers": ["console", "file"], "propagate": False},
+            "matplotlib": {"level": "WARNING", "handlers": ["console", "file"], "propagate": False},
         },
         "root": {
             "level": root_level,

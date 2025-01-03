@@ -2,44 +2,73 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-import pandas as pd
 from pprint import pformat
-from src.data.data_dict import DataDictionary
-from utils.file_access import FileAccess
 
-class DataModule:
+from torch.utils.data import DataLoader
+import torchvision.datasets as dset
+import torchvision.transforms as transforms
+
+import torchvision.utils as vutils
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+class CelebDataModule:
     def __init__(
-        self, data_path: Path,
-        sdo_path: Path,
-        data_dict: DataDictionary
+        self, dataroot: Path,
+        img_size: int,
+        batch_size: int,
+        num_workers: int
     ):
-        self.data_path = data_path
-        self.sdo_path = sdo_path
-        self.dd = data_dict
-
-    def load(self):
-        logging.debug(
-            f"Running DataModule for {self.data_path}.\n{pformat(self.dd.data)}")
-        self.prepare_data()
-        df = self.load_data()
-        df = self.apply_data_dict(df)
-        self.to_parquet(df)
-        return df
+        self.dataroot = dataroot
+        self.img_size = img_size
+        self.batch_size = batch_size
+        self.num_workers = num_workers
     
-    def prepare_data(self):
-        """Download/Extract data"""
-        pass
-
-    def load_data(self):
-        """Load data to memory"""
-        return FileAccess.load_file(self.data_path)
-
-    def apply_data_dict(self, df):
-        """Apply data dictionary transforms"""
-        transforms = self.dd.transforms_store()
-        for func in transforms.values():
-            df = func(df)
-        return df
+    def setup(self):
+        transform = transforms.Compose([
+            transforms.Resize(self.img_size),
+            transforms.CenterCrop(self.img_size),
+            transforms.ToTensor(),
+            transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+        ])
+        
+        self.dataset = dset.ImageFolder(root=self.dataroot, transform=transform)
     
-    def to_parquet(self, df: pd.DataFrame) -> pd.DataFrame:
-        FileAccess.save_file(df, self.sdo_path)
+    def train_dataloader(self):
+        return DataLoader(
+            self.dataset,
+            batch_size=self.batch_size,
+            shuffle=True,
+            num_workers=self.num_workers
+        )
+    
+    def view_dataloader(self):
+        loader = self.train_dataloader()
+        batch = next(iter(loader))
+        logging.debug(pformat(batch))
+        
+        plt.figure(figsize=(8,8))
+        plt.axis("off")
+        plt.title("Training Images")
+        plt.imshow(
+            np.transpose(
+                vutils.make_grid(
+                    batch[0].to(device="cpu")[:64],
+                    padding=2,
+                    normalize=True).cpu(), (1,2,0)
+            )
+        )
+        plt.savefig("reports/figures/training_images.png")
+        plt.show()
+
+
+if __name__ == "__main__":
+    logging.getLogger().setLevel(logging.DEBUG)
+    dataroot = Path("data/raw")
+    img_size = 64
+    batch_size = 128
+    num_workers = 2
+    datamodule = CelebDataModule(dataroot, img_size, batch_size, num_workers)
+    datamodule.setup()
+    datamodule.view_dataloader()
