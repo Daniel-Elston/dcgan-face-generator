@@ -3,6 +3,9 @@ from __future__ import annotations
 from config.state_init import StateManager
 from utils.execution import TaskExecutor
 from src.data.data_module import CelebDataModule
+from config.data import DataParams
+
+from src.plots.visuals import ViewTrainLoader
 
 class Pipeline:
     def __init__(
@@ -11,16 +14,20 @@ class Pipeline:
     ):
         self.state = state
         self.exe = exe
+        
+        self.params = DataParams()
 
         self.data = CelebDataModule(
             dataroot = self.state.paths.get_path("raw"),
-            img_size = 64,
-            batch_size = 128,
-            num_workers = 2
+            params = self.params
         )
 
 
     def __call__(self):
+        self.dataset = self.data.setup()
+        self.dataloader = self.data.train_dataloader()
+        
         steps = [
+            ViewTrainLoader(self.dataset, self.dataloader)
         ]
         self.exe._execute_steps(steps, stage="parent")

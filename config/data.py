@@ -4,17 +4,16 @@ import attr
 import logging
 from pprint import pformat
 
-def default_labels():
-    return ["cat", "dog", "go", "happy", "left", "no", "off", "on", "yes", "zero"]
-
 
 @attr.s
-class DataConfig:
+class DataParams:
     overwrite: bool = attr.ib(default=True)
     save_fig: bool = attr.ib(default=True)
-    labels: list = attr.ib(factory=default_labels)
     subset: bool = attr.ib(default=True)
     shuffle: bool = attr.ib(default=True)
+    img_size: int = attr.ib(default=64)
+    batch_size: int = attr.ib(default=128)
+    num_workers: int = attr.ib(default=2)
 
     def __attrs_post_init__(self):
         attr_dict = attr.asdict(self)
