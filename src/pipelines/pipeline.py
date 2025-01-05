@@ -7,6 +7,7 @@ from config.data import DataParams
 
 from src.plots.visuals import ViewTrainLoader
 
+
 class Pipeline:
     def __init__(
         self, state: StateManager,
@@ -21,13 +22,12 @@ class Pipeline:
             dataroot = self.state.paths.get_path("raw"),
             params = self.params
         )
+        self.dataset = self.data.setup()
+        self.dataloader = self.data.train_dataloader()
 
 
     def __call__(self):
-        self.dataset = self.data.setup()
-        self.dataloader = self.data.train_dataloader()
-        
         steps = [
-            ViewTrainLoader(self.dataset, self.dataloader)
+            ViewTrainLoader(self.dataloader).view_dataloader
         ]
         self.exe._execute_steps(steps, stage="parent")

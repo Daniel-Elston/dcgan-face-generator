@@ -10,13 +10,9 @@ import torchvision.utils as vutils
 
 
 class ViewTrainLoader:
-    def __init__(self, dataset, dataloader):
-        self.dataset = dataset
+    def __init__(self, dataloader):
         self.dataloader = dataloader
     
-    def __call__(self):
-        self.view_dataloader()
-        
     def view_dataloader(self):
         batch = next(iter(self.dataloader))
         logging.debug(pformat(batch))

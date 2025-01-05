@@ -15,7 +15,6 @@ class HyperParams:
     device: str = attr.ib(factory=get_device)
     num_classes: int = attr.ib(default=10)
 
-
     def __attrs_post_init__(self):
         attr_dict = attr.asdict(self)
         logging.debug(f"ModelConfig:\n{pformat(attr_dict)}\n")

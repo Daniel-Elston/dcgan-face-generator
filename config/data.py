@@ -19,6 +19,7 @@ class DataParams:
         attr_dict = attr.asdict(self)
         logging.debug(f"DataConfig:\n{pformat(attr_dict)}\n")
 
+
 class DataState:
     def __init__(self):
         self._state = {}
