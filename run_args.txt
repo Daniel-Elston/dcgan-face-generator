@@ -1,0 +1,5 @@
+python gen_imgs_from_cp.py \
+    --checkpoint_path="lightning_logs/version_0/checkpoints/epoch=4-step=1234.ckpt" \
+    --output_dir="reports/results" \
+    --num_images=64 \
+    --save_name="generated_epoch4.png"
