@@ -34,11 +34,12 @@ class DCGAN(pl.LightningModule):
         super().__init__()
         self.automatic_optimization = False
         self.hyperparams = hyperparams
-        # self.save_hyperparameters(ignore=['hyperparams'])
-        # self.hyperparams.update(vars(hyperparams))
-        # self.save_hyperparameters()
         self.save_hyperparameters(vars(hyperparams))
-        self.sample_noise = torch.randn(64, self.hyperparams.latent_vec_dim, 1, 1)
+        self.sample_noise = torch.randn(
+            64,
+            self.hyperparams.latent_vec_dim,
+            1, 1
+        )
         
         # ------------------
         # Instantiate networks
@@ -85,10 +86,9 @@ class DCGAN(pl.LightningModule):
 
     def training_step(self, batch, batch_idx):
         """
-        Manual optimization with multiple optimizers in a single step.
-        We'll do:
-          1) Discriminator update
-          2) Generator update
+        Manual optimization with multiple optimizers in a single step:
+            1) Discriminator update
+            2) Generator update
         """
         images, _ = batch
         batch_size = images.size(0)
@@ -125,14 +125,21 @@ class DCGAN(pl.LightningModule):
         # -----------------------------------------------------
         # (2) Train Generator
         # -----------------------------------------------------
-        # We do *not* get a new batch here, we reuse same noise
-        # or generate a new one
-        noise = torch.randn(batch_size, self.hyperparams.latent_vec_dim, 1, 1, device=device)
+        # We dont get a new batch here, we reuse same noise, or generate a new one
+        noise = torch.randn(
+            batch_size,
+            self.hyperparams.latent_vec_dim,
+            1, 1,
+            device=device
+        )
         fake_images = self.generator(noise)
         fake_preds = self.discriminator(fake_images)
 
         # Our generator wants the discriminator to guess "valid"
-        g_loss = self.criterion(fake_preds.view(-1), valid_labels.view(-1))
+        g_loss = self.criterion(
+            fake_preds.view(-1),
+            valid_labels.view(-1)
+        )
 
         self.manual_backward(g_loss)
         optG.step()
