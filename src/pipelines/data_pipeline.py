@@ -23,7 +23,10 @@ class DataPipeline:
         self.params = DataParams()
         self.hyperparams = HyperParams()
 
-        self.data = CelebDataModule(dataroot=self.state.paths.get_path("raw"), params=self.params)
+        self.data = CelebDataModule(
+            dataroot=self.state.paths.get_path("raw"),
+            params=self.params
+        )
         self.dataset = self.data.setup()
         self.dataloader = self.data.train_dataloader()
 
