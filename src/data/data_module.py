@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-import logging
 from pathlib import Path
 
+import pytorch_lightning as pl
 from torch.utils.data import DataLoader
 import torchvision.datasets as dset
 import torchvision.transforms as transforms
@@ -10,15 +10,17 @@ import torchvision.transforms as transforms
 from config.data import DataParams
 
 
-class CelebDataModule:
+class CelebDataModule(pl.LightningDataModule):
     def __init__(
         self, dataroot: Path,
         params: DataParams
     ):
+        super().__init__()
         self.dataroot = dataroot
         self.params = params
+        self.dataset = None
     
-    def setup(self):
+    def setup(self, stage=None):
         transform = transforms.Compose([
             transforms.Resize(self.params.img_size),
             transforms.CenterCrop(self.params.img_size),

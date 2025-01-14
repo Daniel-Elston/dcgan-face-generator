@@ -1,0 +1,10 @@
+beta1: 0.5
+device: cpu
+epochs: 5
+latent_vec_dim: 100
+lr: 0.0002
+n_channels: 3
+n_disc_fm: 64
+n_gen_fm: 64
+ngpu: 0
+num_classes: 10
