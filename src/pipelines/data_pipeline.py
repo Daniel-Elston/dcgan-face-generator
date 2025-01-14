@@ -15,8 +15,10 @@ class DataPipeline:
         - Switch ``config/config.yaml`` -> "console_level: DEBUG" to view tensors
         - Train imgs saved to: ``reports/figures``
     """
-
-    def __init__(self, state: StateManager, exe: TaskExecutor):
+    def __init__(
+        self, state: StateManager,
+        exe: TaskExecutor
+    ):
         self.state = state
         self.exe = exe
 
@@ -27,6 +29,7 @@ class DataPipeline:
             dataroot=self.state.paths.get_path("raw"),
             params=self.params
         )
+
         self.dataset = self.data.setup()
         self.dataloader = self.data.train_dataloader()
 

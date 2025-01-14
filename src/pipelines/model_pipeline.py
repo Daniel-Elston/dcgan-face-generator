@@ -17,18 +17,30 @@ class ModelPipeline:
         - View logs via tensorboard
         - Generated imgs saved to: ``reports/results``
     """
-
-    def __init__(self, state: StateManager, exe: TaskExecutor):
+    def __init__(
+        self, state: StateManager,
+        exe: TaskExecutor
+    ):
         self.state = state
         self.exe = exe
 
         self.params = DataParams()
         self.hyperparams = HyperParams()
 
-        self.data = CelebDataModule(dataroot=self.state.paths.get_path("raw"), params=self.params)
+        self.data = CelebDataModule(
+            dataroot=self.state.paths.get_path("raw"),
+            params=self.params
+        )
 
         self.model = DCGAN(self.hyperparams)
 
     def __call__(self):
-        steps = [TrainDCGAN(self.state, self.hyperparams, self.data, self.model)]
+        steps = [
+            TrainDCGAN(
+                self.state,
+                self.hyperparams,
+                self.data,
+                self.model
+            )
+        ]
         self.exe._execute_steps(steps, stage="parent")
